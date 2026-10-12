@@ -68,6 +68,27 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 document.documentElement.classList.add("js");
 
+/* ---------------- Swipe helper (touch) ----------------
+   Calls handlers.left/right/up/down for a quick, mostly-straight one-finger swipe.
+   canStart(e) can veto a gesture at touchstart (e.g. only when a sheet is scrolled to the top). */
+function onSwipe(el, handlers, canStart) {
+  let sx = 0, sy = 0, st = 0, on = false;
+  el.addEventListener("touchstart", e => {
+    on = e.touches.length === 1 && (!canStart || canStart(e) !== false);
+    if (!on) return;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; st = Date.now();
+  }, { passive: true });
+  el.addEventListener("touchend", e => {
+    if (!on) return;
+    on = false;
+    const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+    const ax = Math.abs(dx), ay = Math.abs(dy);
+    if (Math.max(ax, ay) < 60 || Date.now() - st > 700) return;
+    if (ax > ay * 1.4) (dx < 0 ? handlers.left : handlers.right)?.();
+    else if (ay > ax * 1.4) (dy > 0 ? handlers.down : handlers.up)?.();
+  }, { passive: true });
+}
+
 /* ---------------- Toast ---------------- */
 const toastEl = $("[data-toast]");
 let toastT;
@@ -109,10 +130,13 @@ document.addEventListener("click", e => {
   if (!a) return;
   // let new-tab / modified clicks behave natively
   if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-  e.preventDefault();
+  // new-tab links (WhatsApp, Instagram…) open immediately and natively — mobile Safari blocks
+  // a window.open that comes after a delay. The fill still plays as feedback.
+  const external = a.target === "_blank";
+  if (!external) e.preventDefault();
   if (a.classList.contains("is-filling")) return;
   // no animation if motion is reduced or the button was just hidden (e.g. the modal CTA closes its dialog)
-  if (reduceMotion || !a.getClientRects().length || a.closest("dialog:not([open])")) return go(a);
+  if (reduceMotion || !a.getClientRects().length || a.closest("dialog:not([open])")) return external || go(a);
 
   // wrap loose label text so it can sit above the fill (CSS lifts element children only)
   [...a.childNodes].forEach(n => {
@@ -141,7 +165,7 @@ document.addEventListener("click", e => {
   const finish = () => {
     if (done) return;
     done = true;
-    go(a);
+    if (!external) go(a);
     setTimeout(() => {              // reset once we've moved away
       fill.style.opacity = "0";
       a.classList.remove("is-filling");
@@ -204,6 +228,7 @@ document.addEventListener("click", e => {
     if (restoreFocus && lastFocus) lastFocus.focus({ preventScroll: true });
   }
   btn.addEventListener("click", () => (btn.getAttribute("aria-expanded") === "true" ? close() : open()));
+  onSwipe(menu, { down: () => close(), right: () => close() });
   menu.addEventListener("click", e => { if (e.target.closest("a")) close(false); });
   document.addEventListener("keydown", e => {
     if (btn.getAttribute("aria-expanded") !== "true") return;
@@ -243,17 +268,29 @@ document.addEventListener("click", e => {
   render();
 })();
 
-/* ---------------- Client ticker: infinite, seamless at any width ---------------- */
+/* ---------------- Client ticker ----------------
+   Endless strip driven by JS (not a CSS animation) so it can be dragged:
+   - auto-scrolls; pauses while a mouse hovers it
+   - drag / flick with finger or mouse, with momentum, then it carries on by itself
+   - mouse: hover a logo for 1s → it pops out; touch: press and hold a logo → it pops out
+   The strip is clipped (overflow + edge mask), so the pop-out card lives on <body>. */
 (() => {
-  const track = $(".ticker__track");
+  const ticker = $(".ticker"), track = $(".ticker__track");
   if (!track) return;
   const originals = $$("li", track);
   originals.forEach(li => { li.dataset.name = $("img", li).alt; });   // clones lose alt; keep the name for the pop-out
-  const SPEED = 70;   // px per second
+  const SPEED = 70;          // px per second
+  const HOVER_MS = 1000;     // mouse hover before pop-out
+  const PRESS_MS = 450;      // touch press-and-hold before pop-out
+  let setW = 0, x = 0, vel = 0, hovering = false, dragging = false;
+
+  const wrap = () => { if (setW) x = ((x % setW) + setW) % setW - setW; };   // keep x in [-setW, 0)
+  const paint = () => { track.style.transform = `translate3d(${x.toFixed(2)}px, 0, 0)`; };
+
   const build = () => {
     $$("li[data-clone]", track).forEach(li => li.remove());
     if (reduceMotion) return;   // static, wrapped row — no duplicates
-    const setW = originals.reduce((w, li) => w + li.getBoundingClientRect().width, 0);
+    setW = originals.reduce((w, li) => w + li.getBoundingClientRect().width, 0);
     if (!setW) return;
     // enough copies that the strip still covers the screen after shifting one full set
     const copies = Math.ceil((innerWidth + setW) / setW);
@@ -266,24 +303,20 @@ document.addEventListener("click", e => {
         track.appendChild(c);
       });
     }
-    track.style.setProperty("--loop", `-${setW}px`);
-    track.style.setProperty("--dur", `${setW / SPEED}s`);
+    wrap(); paint();
   };
   build();
-  let t;
-  addEventListener("resize", () => { clearTimeout(t); t = setTimeout(build, 150); });
+  let rt;
+  addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(build, 150); });
+  if (reduceMotion) return;
 
-  // Hover-and-hold: after 1s on a logo, a larger full-colour card pops out over it.
-  // The strip is clipped (overflow + edge mask), so the card lives on <body> as a fixed layer.
-  if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-  const HOLD_MS = 1000;
+  // ---- pop-out card
   const pop = document.createElement("div");
   pop.className = "logo-pop";
   pop.setAttribute("aria-hidden", "true");
   pop.innerHTML = "<img alt=''><span></span>";
   document.body.appendChild(pop);
   let holdT, current = null;
-
   const hide = () => {
     clearTimeout(holdT);
     pop.classList.remove("is-on");
@@ -291,12 +324,14 @@ document.addEventListener("click", e => {
     current = null;
   };
   const show = li => {
+    if (!li) return;
     const r = li.getBoundingClientRect();
     const img = $("img", li);
     $("img", pop).src = img.currentSrc || img.src;
     $("span", pop).textContent = li.dataset.name || "";
-    pop.style.width = `${Math.round(r.width * 1.45)}px`;
-    pop.style.left = `${r.left + r.width / 2}px`;
+    const w = Math.min(Math.round(r.width * 1.45), innerWidth - 24);
+    pop.style.width = `${w}px`;
+    pop.style.left = `${Math.min(Math.max(r.left + r.width / 2, w / 2 + 12), innerWidth - w / 2 - 12)}px`;   // keep on screen
     pop.style.top = `${r.top + r.height / 2}px`;
     void pop.offsetWidth;                // start the zoom from scale(.82) every time
     pop.classList.add("is-on");
@@ -304,14 +339,65 @@ document.addEventListener("click", e => {
     current = li;
   };
 
+  // ---- animation loop: auto-scroll, or coast after a flick
+  let last = performance.now();
+  const loop = now => {
+    const dt = Math.min(64, now - last) / 1000;
+    last = now;
+    if (!dragging) {
+      if (Math.abs(vel) > 8) { x += vel * dt; vel *= Math.pow(0.04, dt); }   // momentum, decays smoothly
+      else { vel = 0; if (!hovering && !current) x -= SPEED * dt; }
+      wrap(); paint();
+    }
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+
+  // ---- mouse hover: pause + hover-and-hold pop-out
+  ticker.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") hovering = true; });
+  ticker.addEventListener("pointerleave", e => { if (e.pointerType === "mouse") { hovering = false; hide(); } });
   track.addEventListener("pointerover", e => {
+    if (e.pointerType !== "mouse" || dragging) return;
     const li = e.target.closest("li");
     if (!li || li === current) return;
     hide();
-    holdT = setTimeout(() => show(li), HOLD_MS);
+    holdT = setTimeout(() => show(li), HOVER_MS);
   });
-  track.addEventListener("pointerleave", hide);
-  addEventListener("scroll", () => current && hide(), { passive: true });
+
+  // ---- drag / flick (touch-action: pan-y keeps vertical page scrolling native)
+  let startX = 0, lastX = 0, lastT = 0, moved = false, downLi = null;
+  track.addEventListener("pointerdown", e => {
+    if (e.button !== 0) return;
+    dragging = true; moved = false; vel = 0;
+    startX = lastX = e.clientX; lastT = performance.now();
+    downLi = e.target.closest("li");
+    try { track.setPointerCapture(e.pointerId); } catch {}   // pointer may already be gone on a very fast tap
+    ticker.classList.add("is-dragging");
+    if (e.pointerType !== "mouse") { clearTimeout(holdT); holdT = setTimeout(() => { if (!moved) show(downLi); }, PRESS_MS); }
+  });
+  track.addEventListener("pointermove", e => {
+    if (!dragging) return;
+    const now = performance.now(), dx = e.clientX - lastX;
+    if (!moved && Math.abs(e.clientX - startX) > 6) { moved = true; clearTimeout(holdT); hide(); }
+    if (!moved) return;
+    x += dx;
+    const inst = dx / Math.max(1, now - lastT) * 1000;
+    vel = vel * 0.6 + inst * 0.4;                       // smoothed release velocity
+    lastX = e.clientX; lastT = now;
+    wrap(); paint();
+  });
+  const release = e => {
+    if (!dragging) return;
+    dragging = false;
+    ticker.classList.remove("is-dragging");
+    if (performance.now() - lastT > 80) vel = 0;        // finger stopped before lifting: no fling
+    clearTimeout(holdT);
+    if (e.pointerType !== "mouse") hide();              // touch pop-out lasts while held
+  };
+  track.addEventListener("pointerup", release);
+  track.addEventListener("pointercancel", release);
+  track.addEventListener("contextmenu", e => e.preventDefault());   // long-press shouldn't open the image menu
+  addEventListener("scroll", () => current && !dragging && hide(), { passive: true });
 })();
 
 /* ---------------- Work: "Now Showing" reel ----------------
@@ -433,6 +519,7 @@ let openCase = () => {};               // assigned by the modal below
   const schedule = () => { if (!ticking) { ticking = true; requestAnimationFrame(render); } };
   addEventListener("scroll", () => wide.matches && schedule(), { passive: true });
   viewport.addEventListener("scroll", () => !wide.matches && schedule(), { passive: true });
+  viewport.addEventListener("scroll", () => reel.classList.add("is-swiped"), { passive: true, once: true });
   addEventListener("resize", layout);
   wide.addEventListener("change", layout);
 
@@ -497,31 +584,50 @@ let openCase = () => {};               // assigned by the modal below
   function step(d) {
     const p = reelIds.indexOf(idx);
     render(reelIds[(p + d + reelIds.length) % reelIds.length]);
+    const body = $(".modal__body", modal);
+    body.classList.remove("slide-next", "slide-prev");
+    void body.offsetWidth;
+    body.classList.add(d > 0 ? "slide-next" : "slide-prev");
+    modal.scrollTop = 0;
   }
   openCase = (i, from) => {
     opener = from;
     render(i);
     modal.showModal();
+    cleaned = false;
     document.body.classList.add("modal-open");
     // <dialog> sits in the browser's top layer, above our cursor — use the native one while it's open
     document.documentElement.classList.remove("has-cursor");
   };
-  modal.addEventListener("close", () => {
+  // clean-up runs straight away when we close the sheet, and again (harmlessly) on the native
+  // close event, which also covers Esc — the event alone can arrive late
+  let cleaned = true;
+  const cleanup = () => {
+    if (cleaned) return;
+    cleaned = true;
     document.body.classList.remove("modal-open");
     if (matchMedia("(pointer: fine)").matches) document.documentElement.classList.add("has-cursor");
     opener?.focus({ preventScroll: true });
-  });
-  modal.addEventListener("click", e => { if (e.target === modal) modal.close(); }); // backdrop
-  $("[data-modal-close]").addEventListener("click", () => modal.close());
+  };
+  const closeModal = () => { modal.close(); cleanup(); };
+  modal.addEventListener("close", cleanup);
+  modal.addEventListener("click", e => { if (e.target === modal) closeModal(); }); // backdrop
+  $("[data-modal-close]").addEventListener("click", closeModal);
   $("[data-modal-prev]").addEventListener("click", () => step(-1));
   $("[data-modal-next]").addEventListener("click", () => step(1));
   modal.addEventListener("keydown", e => {
     if (e.key === "ArrowLeft") step(-1);
     if (e.key === "ArrowRight") step(1);
   });
+  let sheetTop = 0;
+  onSwipe(modal, {
+    left: () => step(1),
+    right: () => step(-1),
+    down: () => { if (sheetTop <= 0) closeModal(); },   // only when the sheet was already scrolled to the top
+  }, () => { sheetTop = modal.scrollTop; });
   $("[data-modal-cta]").addEventListener("click", e => {
     opener = null;
-    modal.close();
+    closeModal();
     preselectService(e.currentTarget.dataset.service);
   });
 })();
@@ -569,7 +675,8 @@ function preselectService(name) {
   label.classList.remove("flash");
   void label.offsetWidth;
   label.classList.add("flash");
-  setTimeout(() => $("#f-name").focus({ preventScroll: true }), reduceMotion ? 0 : 700);
+  // the field is gone once the form has been sent (replaced by the thank-you message)
+  setTimeout(() => $("#f-name")?.focus({ preventScroll: true }), reduceMotion ? 0 : 700);
 }
 
 /* ---------------- Counters (final value is in the HTML, so no-JS / SR users never see "0X") ---------------- */
@@ -716,6 +823,41 @@ document.addEventListener("click", async e => {
       if (lbl) lbl.textContent = "Send enquiry";
     }
   });
+})();
+
+/* ---------------- Mobile quick-action bar ----------------
+   Phones only (CSS). Slides up once you're past the opening screen; hides near the contact
+   form / footer and while the menu is open, so it never covers what you're reading. */
+(() => {
+  if (!CONFIG.whatsapp) return;
+  const bar = document.createElement("nav");
+  bar.className = "mbar";
+  bar.setAttribute("aria-label", "Quick actions");
+  const contactHref = $("#contact") ? "#contact" : "/#contact";
+  bar.innerHTML = `
+    <a class="btn mbar__wa" href="https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent("Hi Hytz! I'd like to discuss a project.")}" target="_blank" rel="noopener">WhatsApp</a>
+    <a class="btn btn--accent" href="${contactHref}">Start a project</a>`;
+  document.body.appendChild(bar);
+  const hero = $(".hero");
+  const ends = [$("#contact"), $(".footer")].filter(Boolean);
+  const visible = new Set();
+  const update = () => {
+    const past = scrollY > (hero ? hero.offsetHeight * 0.7 : 320);
+    const on = past && !visible.size && !document.body.classList.contains("menu-open") && !document.body.classList.contains("modal-open");
+    bar.classList.toggle("is-on", on);
+    bar.inert = !on;
+  };
+  new IntersectionObserver(es => {
+    es.forEach(e => (e.isIntersecting ? visible.add(e.target) : visible.delete(e.target)));
+    update();
+  }, { rootMargin: "0px 0px -20% 0px" }).observe(...ends.slice(0, 1));
+  if (ends[1]) new IntersectionObserver(es => {
+    es.forEach(e => (e.isIntersecting ? visible.add(e.target) : visible.delete(e.target)));
+    update();
+  }).observe(ends[1]);
+  addEventListener("scroll", update, { passive: true });
+  new MutationObserver(update).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+  update();
 })();
 
 /* ---------------- Footer year ---------------- */

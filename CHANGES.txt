@@ -15,20 +15,59 @@ BUGS ON THE OLD SITE
 
 
 CHANGES
-- Every button and link now works.
+- Every button and link now works, including "Back to top".
 - Contact form emails info@hytz.co.in.
 - WhatsApp, Call, Instagram, LinkedIn, Facebook and founder contact added.
 - Same colors, logo and fonts; Malayalam greeting (നമസ്കാരം!).
 - Empty orange box is now a call-to-action.
+- Orange square browser-tab icon.
 
 
 IMPROVEMENTS
 - "Now Showing" film-reel showcase of the work, with case studies.
 - Staircase scroll effect, orange mouse circle, fill-on-click buttons.
-- Endless client logo strip, bigger logos.
-- Insights section with the Job Kurian website article.
-- Better Google ranking: titles, descriptions, previews, sitemap.
-- Works on phones and with keyboard.
+- Client logos much bigger in an endless strip; hold the mouse on one
+  for a second and it pops out larger, in full color, with the name.
+- Built for phones: swipe through the work reel and case studies, swipe
+  down to close, drag the logo strip, press-and-hold a logo to zoom,
+  and a floating WhatsApp / "Start a project" bar while browsing.
+- Also works with a keyboard.
+
+
+THE JOB KURIAN PAGE (NEW)
+- Antony's LinkedIn post about launching jobkurian.com is now a full
+  article on the site: hytz-co.web.app/insights/job-kurian-website/
+- It shows the real website, what Hytz built, and credits the team.
+- It proves Hytz also designs and builds websites, not just campaigns.
+- It is the first post in a new "Insights" section; more stories can be
+  added the same way.
+
+
+SEO: WHY IT MATTERS FOR SALES
+What was added:
+- Every page has a clear title and description written for Google.
+- Rich previews when links are shared on WhatsApp, LinkedIn and X.
+- Hidden "business card" data telling Google who Hytz is, where it is,
+  the founder, phone number and social pages.
+- The article is marked as a news-style story (author, date, image).
+- A sitemap so Google finds and lists every page quickly.
+
+How it brings in business:
+- Found by the right people: when a brand or film producer searches
+  "marketing agency Kerala" or "film promotion agency", a well-set-up
+  site can appear in results instead of being invisible.
+- Every article is a new door in: the Job Kurian story can show up for
+  people searching for Job Kurian, artist websites or web design in
+  Kerala, which brings visitors who never searched for "Hytz".
+- Name searches look professional: searching "Hytz" can show the logo,
+  contact details and social links together, which builds trust.
+- Shares look polished: links sent on WhatsApp or LinkedIn show a proper
+  image and headline, so more people click.
+- Visitors become leads: once they arrive, every button now works and
+  the form actually reaches the inbox, so the extra traffic turns into
+  real enquiries instead of being lost.
+- It keeps building: each new case study or article adds more ways to
+  be found, at no extra advertising cost.
 
 
 TO DO BEFORE GOING LIVE
@@ -36,3 +75,5 @@ TO DO BEFORE GOING LIVE
 - Add real results for each project.
 - Confirm permission for posters and the Job Kurian article.
 - Point hytz.co.in to the new site.
+- Submit the sitemap in Google Search Console after launch.
+- Post new Insights articles regularly (e.g. one per campaign).
