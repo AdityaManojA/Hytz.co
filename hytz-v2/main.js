@@ -78,14 +78,28 @@ function toast(msg) {
   toastT = setTimeout(() => toastEl.classList.remove("is-on"), 2400);
 }
 
+/* ---------------- "Top" links: logo, Home, Back to top ----------------
+   The hero (#top) is position: sticky, so the browser thinks it's always in view
+   and a plain #top jump doesn't scroll. Scroll the window to 0 explicitly. */
+function scrollToTop() {
+  history.replaceState(null, "", location.pathname + location.search);
+  scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+}
+document.addEventListener("click", e => {
+  const a = e.target.closest('a[href="#top"]');
+  if (!a || a.classList.contains("btn") || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  e.preventDefault();
+  scrollToTop();
+});
+
 /* ---------------- Link buttons: arrow floods the button, then go ---------------- */
 function go(a) {
   const href = a.getAttribute("href");
   if (a.target === "_blank") return window.open(a.href, "_blank", "noopener");
+  if (href === "#top") return scrollToTop();
   if (href.startsWith("#")) {
-    const target = href === "#top" ? document.body : document.getElementById(href.slice(1));
     history.pushState(null, "", href);
-    target?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+    document.getElementById(href.slice(1))?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
   } else {
     location.href = a.href;
   }

@@ -1,93 +1,38 @@
-HYTZ WEBSITE - WHAT WE FOUND AND WHAT WE CHANGED
-================================================
+HYTZ WEBSITE - SUMMARY
+Live: https://hytz-co.web.app
 
 
-PROBLEMS ON THE CURRENT WEBSITE (hytz.co.in)
---------------------------------------------
-- "Let's talk", "More about us" and "Contact Now" buttons do nothing when clicked.
-- Clicking anywhere on the big black opening screen opens a broken page.
-- The "+" menu button at the top does nothing.
-- The menu links at the bottom (Home, About, Work...) look clickable but aren't.
-- The "Work" and "Insights" pages don't exist (page not found).
-- The email shown is info@hytz.co.in, but clicking it emails "dummy@mail.com".
-  Every enquiry sent that way is lost.
-- The About and Contact pages are still the unedited website template:
-  they talk about someone called "Clive", show prices in US dollars,
-  claim awards Hytz never won, and give a Los Angeles address.
-- "Use for Free" buttons link to the template seller's page.
-- A large empty orange box sits near the bottom of the page.
-- The impact numbers briefly show "0X" and "1M+" before loading properly.
-- Images have no descriptions, which hurts Google ranking and accessibility.
+BUGS ON THE OLD SITE
+- Buttons ("Let's talk", "More about us", "Contact Now", "+" menu) did nothing.
+- Clicking the opening screen opened a broken page.
+- Footer menu links weren't clickable.
+- "Work" and "Insights" pages didn't exist.
+- Email link went to dummy@mail.com, so enquiries were lost.
+- About and Contact pages were unedited template ("Clive", US prices,
+  fake awards, Los Angeles address).
+- Empty orange box near the bottom.
+- Numbers flashed "0X" before loading.
 
 
-WHAT THE NEW WEBSITE DOES BETTER
---------------------------------
-- Same look: same black, off-white and orange colors, same logo, same fonts.
-- Every button now works and goes somewhere useful.
-- Working menu that opens full-screen and closes with the Esc key.
-- Opening screen: same big "hytz." logo, plus clear "Start a project"
-  and "See our work" buttons.
-- Smooth "staircase" effect when scrolling from the opening screen,
-  copied from the current site.
-- Greeting in Malayalam (namaskaram) in grey with an orange "!".
-- "Namaskaram" section uses the same layout and fonts as the current site.
-- Client logos are bigger and scroll in an endless loop.
-- New "Now Showing" work section: posters slide past like a film reel as you
-  scroll, with the project name, details and results next to each one.
-  On phones you swipe through them instead.
-- The work headline has a playful "paused video" effect on the word "stopped".
-- Click any poster to open a full case study, then go to the next one.
-- Work can be filtered by Film, Brand or Events.
-- Services open up to show what's included, with a "Discuss" button that
-  ticks that service in the contact form for you.
-- Impact numbers count up smoothly and never show "0".
-- The empty orange box is now a big "Let's break the internet" call to action.
-- Contact form checks for mistakes (like a wrong email) before sending.
-- "Send enquiry" now emails info@hytz.co.in directly.
-- A copy button next to the email address.
-- WhatsApp, Call, Instagram, LinkedIn and Facebook buttons, plus a line to reach
-  Antony Roy (CEO & Founder) directly on +91 97463 21230.
-- New "Insights" section and its first article: the story of the Job Kurian
-  website (turned from Antony's LinkedIn post into a proper page).
-  This replaces the "Insights" link that was broken on the old site.
-- Better Google results for the article: its own title, description,
-  author, date and preview image, plus a sitemap so Google finds every page.
-- An orange circle follows the mouse a little behind it. It turns dark on
-  orange areas so it never disappears, and grows slightly over buttons.
-- Buttons fill with color when clicked, then take you to the page.
-- Works well on phones, and respects people who turn off animations.
-- Better Google listing: proper page title, description and sharing preview.
+CHANGES
+- Every button and link now works.
+- Contact form emails info@hytz.co.in.
+- WhatsApp, Call, Instagram, LinkedIn, Facebook and founder contact added.
+- Same colors, logo and fonts; Malayalam greeting (നമസ്കാരം!).
+- Empty orange box is now a call-to-action.
 
 
-ISSUES WE HIT WHILE BUILDING (ALL FIXED)
-----------------------------------------
-- The mouse circle disappeared over the white logo. Fixed by keeping the
-  normal mouse pointer visible and changing the circle's color.
-- The page could be scrolled sideways on phones. Fixed.
-- The menu text was slightly too big on small phones. Fixed.
-- The button click animation covered the button text. Fixed.
-- The client logo strip ran out and left a gap on wide screens. Fixed.
-- After adding the staircase effect, the black opening screen covered
-  every section below it. Fixed.
-- The work posters slid underneath the project details panel. Fixed.
-- The arrow buttons in the work section showed as blank circles. Fixed.
-- A layout change accidentally reset the Malayalam greeting to tiny text.
-  Fixed.
-- The Malayalam greeting was first too big, then adjusted to sit quietly
-  beside the heading.
-- The mouse circle grew too big over buttons. Made smaller.
+IMPROVEMENTS
+- "Now Showing" film-reel showcase of the work, with case studies.
+- Staircase scroll effect, orange mouse circle, fill-on-click buttons.
+- Endless client logo strip, bigger logos.
+- Insights section with the Job Kurian website article.
+- Better Google ranking: titles, descriptions, previews, sitemap.
+- Works on phones and with keyboard.
 
 
-STILL TO DO BEFORE GOING LIVE
------------------------------
-- Contact form: the first enquiry sends an activation email to
-  info@hytz.co.in. Someone must click the link in it, or enquiries won't
-  arrive.
-- Check that Job Kurian's team is happy for their website (and the photo
-  on it) to be shown in the article.
-- After launch, submit the sitemap (hytz.co.in/sitemap.xml) in Google
-  Search Console so Google indexes the new pages quickly.
-- Add real results and numbers for each project (only Padakkalam's
-  "2M+ YouTube views" is filled in so far).
-- Save the images into the new website's own files, because they currently
-  load from the old website.
+TO DO BEFORE GOING LIVE
+- Click the activation email FormSubmit sends to info@hytz.co.in.
+- Add real results for each project.
+- Confirm permission for posters and the Job Kurian article.
+- Point hytz.co.in to the new site.
