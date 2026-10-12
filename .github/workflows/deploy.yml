@@ -1,0 +1,26 @@
+# Deploys the site to Firebase Hosting (project: hytz-co) on every push to main.
+# Needs the repository secret FIREBASE_SERVICE_ACCOUNT_HYTZ_CO; until it's added, the deploy step is skipped.
+name: Deploy to Firebase Hosting
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      HAS_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HYTZ_CO != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Skip (no deploy key yet)
+        if: env.HAS_KEY != 'true'
+        run: echo "FIREBASE_SERVICE_ACCOUNT_HYTZ_CO secret not set; skipping deploy."
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        if: env.HAS_KEY == 'true'
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HYTZ_CO }}
+          channelId: live
+          projectId: hytz-co
