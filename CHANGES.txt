@@ -28,9 +28,10 @@ IMPROVEMENTS
 - Staircase scroll effect, orange mouse circle, fill-on-click buttons.
 - Client logos much bigger in an endless strip; hold the mouse on one
   for a second and it pops out larger, in full color, with the name.
-- Built for phones: swipe through the work reel and case studies, swipe
-  down to close, drag the logo strip, press-and-hold a logo to zoom,
-  and a floating WhatsApp / "Start a project" bar while browsing.
+- Built for phones: the work reel plays as you scroll (or swipe), swipe
+  through case studies and down to close, drag the logo strip,
+  press-and-hold a logo to zoom, and a floating WhatsApp /
+  "Start a project" bar while browsing.
 - Also works with a keyboard.
 
 

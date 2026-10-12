@@ -402,8 +402,9 @@ document.addEventListener("click", e => {
 
 /* ---------------- Work: "Now Showing" reel ----------------
    f = fractional index of the poster in focus (0 … n-1).
-   Desktop (>860px): the reel pins; page scroll through it maps to f, and the track is translated.
-   Narrow:           the viewport scrolls natively (scroll-snap); its scrollLeft maps to f.
+   Pinned (any screen at least 520px tall — desktop and phones in portrait): the reel pins and
+             page scroll through it maps to f; the track is translated. Horizontal swipes also step it.
+   Short screens (phone held sideways): the viewport scrolls natively (scroll-snap); its scrollLeft maps to f.
    Everything visual (scale, dimming, credits, counter, film holes) is derived from f. */
 let reelIds = WORK.map((_, i) => i);   // WORK indexes currently shown (after filter) — also used by the modal
 let openCase = () => {};               // assigned by the modal below
@@ -413,7 +414,7 @@ let openCase = () => {};               // assigned by the modal below
   if (!reel) return;
   const credits = $("[data-credits]"), count = $("[data-reel-count]"), bar = $("[data-reel-bar]");
   const films = $$(".film"), prev = $("[data-reel-prev]"), next = $("[data-reel-next]");
-  const wide = matchMedia("(min-width: 861px)");
+  const pinned = matchMedia("(min-height: 520px)");
   const CAT = { film: "Film promotion", brand: "Brand campaign", event: "Event campaign" };
   const STEP_VH = 55;   // scroll distance per poster on desktop
   let items = [], active = -1, f = 0, ticking = false, swapT;
@@ -439,13 +440,13 @@ let openCase = () => {};               // assigned by the modal below
 
   // desktop: give the reel enough height to scroll through every poster while pinned
   function layout() {
-    reel.style.height = wide.matches ? `calc(100svh + ${maxF() * STEP_VH}vh)` : "";
+    reel.style.height = pinned.matches ? `calc(100svh + ${maxF() * STEP_VH}vh)` : "";
     track.style.transform = "";
     render();
   }
 
   function readF() {
-    if (wide.matches) {
+    if (pinned.matches) {
       const span = reel.offsetHeight - innerHeight;
       const p = span > 0 ? Math.min(1, Math.max(0, (scrollY - reelTop()) / span)) : 0;
       return p * maxF();
@@ -458,7 +459,7 @@ let openCase = () => {};               // assigned by the modal below
     if (!items.length) return;
     f = readF();
     const step = stepPx();
-    if (wide.matches) {
+    if (pinned.matches) {
       // centre the (fractional) focused poster in the viewport
       const x = viewport.clientWidth / 2 - (f * step + items[0].offsetWidth / 2);
       track.style.transform = `translate3d(${x.toFixed(1)}px, 0, 0)`;
@@ -469,6 +470,7 @@ let openCase = () => {};               // assigned by the modal below
       li.style.setProperty("--o", (1 - d * 0.6).toFixed(3));
     });
     bar.style.setProperty("--p", (maxF() ? f / maxF() : 0).toFixed(4));
+    if (f > 0.3) reel.classList.add("is-swiped");
     films.forEach((el, i) => el.style.setProperty("--film", ((i ? 1 : -1) * f * step * 0.5).toFixed(1)));
     setActive(Math.round(f));
   }
@@ -508,7 +510,7 @@ let openCase = () => {};               // assigned by the modal below
   function goTo(k) {
     k = Math.max(0, Math.min(maxF(), k));
     const behavior = reduceMotion ? "auto" : "smooth";
-    if (wide.matches) {
+    if (pinned.matches) {
       const span = reel.offsetHeight - innerHeight;
       scrollTo({ top: reelTop() + (maxF() ? (k / maxF()) * span : 0) + 1, behavior });
     } else {
@@ -517,11 +519,11 @@ let openCase = () => {};               // assigned by the modal below
   }
 
   const schedule = () => { if (!ticking) { ticking = true; requestAnimationFrame(render); } };
-  addEventListener("scroll", () => wide.matches && schedule(), { passive: true });
-  viewport.addEventListener("scroll", () => !wide.matches && schedule(), { passive: true });
+  addEventListener("scroll", () => pinned.matches && schedule(), { passive: true });
+  viewport.addEventListener("scroll", () => !pinned.matches && schedule(), { passive: true });
   viewport.addEventListener("scroll", () => reel.classList.add("is-swiped"), { passive: true, once: true });
   addEventListener("resize", layout);
-  wide.addEventListener("change", layout);
+  pinned.addEventListener("change", layout);
 
   // click: off-centre poster → bring it to centre; centred poster → open the case study
   track.addEventListener("click", e => {
@@ -543,6 +545,10 @@ let openCase = () => {};               // assigned by the modal below
     const b = e.target.closest(".poster");
     if (b && b.matches(":focus-visible") && +b.dataset.k !== active) goTo(+b.dataset.k);
   });
+  onSwipe(viewport, {
+    left: () => pinned.matches && goTo(active + 1),
+    right: () => pinned.matches && goTo(active - 1),
+  });
   prev.addEventListener("click", () => goTo(active - 1));
   next.addEventListener("click", () => goTo(active + 1));
   $("[data-credits-open]").addEventListener("click", e => openCase(reelIds[active], e.currentTarget));
@@ -553,7 +559,7 @@ let openCase = () => {};               // assigned by the modal below
     const flt = c.dataset.filter;
     chips.forEach(x => { const on = x === c; x.classList.toggle("is-active", on); x.setAttribute("aria-pressed", on); });
     reelIds = WORK.map((_, i) => i).filter(i => flt === "all" || WORK[i].cat === flt);
-    const inReel = wide.matches && scrollY > reelTop();
+    const inReel = pinned.matches && scrollY > reelTop();
     build();
     if (inReel) scrollTo({ top: reelTop() + 1, behavior: "auto" });
     else viewport.scrollLeft = 0;
@@ -841,9 +847,13 @@ document.addEventListener("click", async e => {
   const hero = $(".hero");
   const ends = [$("#contact"), $(".footer")].filter(Boolean);
   const visible = new Set();
+  const reelEl = $("[data-reel]");
   const update = () => {
     const past = scrollY > (hero ? hero.offsetHeight * 0.7 : 320);
-    const on = past && !visible.size && !document.body.classList.contains("menu-open") && !document.body.classList.contains("modal-open");
+    // step aside while the work reel fills the screen, so it never covers "View case" / the arrows
+    const r = reelEl?.getBoundingClientRect();
+    const inReel = r && r.top < innerHeight * 0.5 && r.bottom > innerHeight * 0.5;
+    const on = past && !inReel && !visible.size && !document.body.classList.contains("menu-open") && !document.body.classList.contains("modal-open");
     bar.classList.toggle("is-on", on);
     bar.inert = !on;
   };

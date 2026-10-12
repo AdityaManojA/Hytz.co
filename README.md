@@ -55,7 +55,8 @@ A rebuild of [hytz.co.in](https://www.hytz.co.in/) that keeps the brand's look (
 - A new **Insights** section, starting with the story of the Job Kurian website, which shows Hytz builds websites as well as campaigns.
 
 **Built for phones**
-- Swipe through the work reel; swipe case studies left/right, and down to close.
+- The work reel pins and plays as you scroll, just like on desktop; swiping left/right also moves it.
+- Swipe case studies left/right, and down to close.
 - Drag or flick the logo strip; press and hold a logo to zoom in.
 - A floating WhatsApp / "Start a project" bar while browsing, which steps aside near the contact form.
 - Fits around the notch and home bar on modern phones, with no stuck hover effects after a tap.
