@@ -248,6 +248,7 @@ document.addEventListener("click", e => {
   const track = $(".ticker__track");
   if (!track) return;
   const originals = $$("li", track);
+  originals.forEach(li => { li.dataset.name = $("img", li).alt; });   // clones lose alt; keep the name for the pop-out
   const SPEED = 70;   // px per second
   const build = () => {
     $$("li[data-clone]", track).forEach(li => li.remove());
@@ -271,6 +272,46 @@ document.addEventListener("click", e => {
   build();
   let t;
   addEventListener("resize", () => { clearTimeout(t); t = setTimeout(build, 150); });
+
+  // Hover-and-hold: after 1s on a logo, a larger full-colour card pops out over it.
+  // The strip is clipped (overflow + edge mask), so the card lives on <body> as a fixed layer.
+  if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  const HOLD_MS = 1000;
+  const pop = document.createElement("div");
+  pop.className = "logo-pop";
+  pop.setAttribute("aria-hidden", "true");
+  pop.innerHTML = "<img alt=''><span></span>";
+  document.body.appendChild(pop);
+  let holdT, current = null;
+
+  const hide = () => {
+    clearTimeout(holdT);
+    pop.classList.remove("is-on");
+    current?.classList.remove("is-popped");
+    current = null;
+  };
+  const show = li => {
+    const r = li.getBoundingClientRect();
+    const img = $("img", li);
+    $("img", pop).src = img.currentSrc || img.src;
+    $("span", pop).textContent = li.dataset.name || "";
+    pop.style.width = `${Math.round(r.width * 1.45)}px`;
+    pop.style.left = `${r.left + r.width / 2}px`;
+    pop.style.top = `${r.top + r.height / 2}px`;
+    void pop.offsetWidth;                // start the zoom from scale(.82) every time
+    pop.classList.add("is-on");
+    li.classList.add("is-popped");
+    current = li;
+  };
+
+  track.addEventListener("pointerover", e => {
+    const li = e.target.closest("li");
+    if (!li || li === current) return;
+    hide();
+    holdT = setTimeout(() => show(li), HOLD_MS);
+  });
+  track.addEventListener("pointerleave", hide);
+  addEventListener("scroll", () => current && hide(), { passive: true });
 })();
 
 /* ---------------- Work: "Now Showing" reel ----------------

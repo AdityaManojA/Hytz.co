@@ -270,13 +270,29 @@ main > section:not(.hero), .footer { position: relative; z-index: 1; }
   display: flex; width: max-content; list-style: none; margin: 0; padding: 0;
   animation: marquee var(--dur, 40s) linear infinite;
 }
-.ticker:hover .ticker__track { animation-play-state: paused; }
+.ticker:hover .ticker__track, .ticker:has(.is-popped) .ticker__track { animation-play-state: paused; }
 .ticker li {
-  flex: none; width: clamp(200px, 20vw, 300px); height: clamp(130px, 13vw, 200px);
+  flex: none; width: clamp(240px, 26vw, 400px); height: clamp(130px, 12vw, 190px);
   border-right: 1px solid var(--paper-2); display: grid; place-items: center;
 }
-.ticker img { height: clamp(72px, 8vw, 128px); width: auto; max-width: 92%; object-fit: contain; filter: grayscale(1); opacity: .85; transition: opacity .25s, filter .25s, transform .4s var(--ease); }
-.ticker li:hover img { opacity: 1; filter: none; transform: scale(1.06); }
+/* the logo files are 2048×2048 squares with the mark in a thin middle band — crop to that band
+   (same 203:77 window the original site uses) so the logo fills the width */
+.ticker img { width: 86%; height: auto; aspect-ratio: 203 / 77; object-fit: cover; filter: grayscale(1); opacity: .85; transition: opacity .3s, filter .3s, transform .5s var(--ease); }
+.ticker li:hover img { opacity: 1; filter: none; transform: scale(1.04); }
+.ticker li.is-popped img { opacity: 0; }   /* the pop-out card takes over */
+
+/* Hover-and-hold (1s) pop-out: a floating card over the logo, outside the clipped strip */
+.logo-pop {
+  position: fixed; left: 0; top: 0; z-index: 60; pointer-events: none;
+  display: grid; place-items: center; gap: 6px; padding: 18px 24px 20px;
+  background: var(--white); border-radius: 22px;
+  box-shadow: 0 2px 6px rgba(9, 9, 9, .04), 0 30px 70px -24px rgba(9, 9, 9, .35);
+  opacity: 0; transform: translate(-50%, -50%) scale(.82);
+  transition: opacity .3s var(--ease), transform .45s var(--ease);
+}
+.logo-pop.is-on { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.logo-pop img { width: 100%; height: auto; aspect-ratio: 203 / 77; object-fit: cover; display: block; }
+.logo-pop span { font-size: 13px; color: var(--grey); letter-spacing: .02em; }
 @keyframes marquee { to { transform: translate3d(var(--loop, -50%), 0, 0); } }
 
 /* ---------------- Work — "Now Showing" reel ---------------- */
