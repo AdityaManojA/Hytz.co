@@ -109,6 +109,47 @@
       .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .frow { grid-template-columns: 110px 1fr 70px; }
     }
+    /* ---- phones ---- */
+    @media (max-width: 600px) {
+      .br-wide { display: none; }
+      .hero { padding-top: 28px; }
+      .hero h1 { font-size: clamp(32px, 9.5vw, 40px); }
+      .hero p { font-size: 15px; }
+      .section { margin-top: 30px; }
+      .section-head { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .card { padding: 16px; border-radius: 16px; }
+      .live__actions { flex-direction: column; }
+      .live__actions .btn { justify-content: center; width: 100%; min-height: 48px; }
+      .feed { max-height: 300px; }
+      .feed li { grid-template-columns: 32px 1fr; padding: 10px; }
+      .feed time { grid-column: 2; font-size: 11px; margin-top: -4px; }
+      .step { font-size: 14px; padding: 11px 12px; }
+      .step small { display: none; }
+      .kpis { gap: 10px; }
+      .kpi { padding: 14px; }
+      .kpi strong { font-size: 24px; }
+      .kpi em { display: block; margin-top: 4px; line-height: 1.3; }
+      /* funnel: label above its bar */
+      .frow { grid-template-columns: 1fr auto; grid-template-areas: "label num" "bar bar"; gap: 6px 10px; }
+      .frow label { grid-area: label; }
+      .frow b { grid-area: num; }
+      .frow b small { display: inline; margin-left: 6px; }
+      .frow .bar { grid-area: bar; height: 22px; }
+      /* tables become stacked cards */
+      .scroll-x { overflow: visible; }
+      table.stack thead { display: none; }
+      table.stack, table.stack tbody, table.stack tr, table.stack td { display: block; width: 100%; }
+      table.stack tr { padding: 12px 0; border-bottom: 1px solid var(--line); }
+      table.stack td { border: 0; padding: 3px 0; text-align: left; display: flex; justify-content: space-between; gap: 12px; }
+      table.stack td::before { content: attr(data-label); color: var(--grey); font-size: 12px; flex: none; }
+      table.stack td:first-child { font-weight: 600; }
+      table.stack td:first-child::before { display: none; }
+      table.stack tr.total td:first-child { color: var(--accent); }
+      table.stack--plan td { display: block; }
+      table.stack--plan td::before { display: block; margin-bottom: 2px; }
+      table.stack--plan td:first-child { margin-bottom: 4px; }
+      footer { flex-direction: column; }
+    }
     @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
   </style>
 </head>
@@ -121,7 +162,7 @@
 
     <section class="hero">
       <p class="eyebrow"><span class="rec" aria-hidden="true"></span> Growth dashboard · concept</p>
-      <h1>Every rupee of ad spend,<br>accounted for<span class="dot">.</span></h1>
+      <h1>Every rupee of ad spend,<br class="br-wide"> accounted for<span class="dot">.</span></h1>
       <p>The new hytz.co.in tracks every action that matters: WhatsApp taps, calls, case studies opened, enquiries sent. That data proves which ads bring clients, and it's the same setup Hytz can sell to every D2C and film client.</p>
       <p class="byline">Concept by Aditya Manoj · built on the rebuilt Hytz site</p>
     </section>
@@ -169,13 +210,13 @@
         </div>
         <div class="card scroll-x">
           <h3 style="font-size:18px;margin-bottom:6px">By channel</h3>
-          <table>
+          <table class="stack">
             <thead><tr><th>Channel</th><th class="num">Spend</th><th class="num">Enquiries</th><th class="num">Cost / enquiry</th></tr></thead>
             <tbody>
-              <tr><td>Meta (Instagram + Facebook)</td><td class="num">₹74,400</td><td class="num">128</td><td class="num">₹581</td></tr>
-              <tr><td>Google Search</td><td class="num">₹33,600</td><td class="num">46</td><td class="num">₹730</td></tr>
-              <tr><td>YouTube</td><td class="num">₹12,000</td><td class="num">12</td><td class="num">₹1,000</td></tr>
-              <tr><td><b>Total</b></td><td class="num"><b>₹1,20,000</b></td><td class="num"><b>186</b></td><td class="num"><b>₹645</b></td></tr>
+              <tr><td data-label="Channel">Meta (Instagram + Facebook)</td><td class="num" data-label="Spend">₹74,400</td><td class="num" data-label="Enquiries">128</td><td class="num" data-label="Cost / enquiry">₹581</td></tr>
+              <tr><td data-label="Channel">Google Search</td><td class="num" data-label="Spend">₹33,600</td><td class="num" data-label="Enquiries">46</td><td class="num" data-label="Cost / enquiry">₹730</td></tr>
+              <tr><td data-label="Channel">YouTube</td><td class="num" data-label="Spend">₹12,000</td><td class="num" data-label="Enquiries">12</td><td class="num" data-label="Cost / enquiry">₹1,000</td></tr>
+              <tr class="total"><td data-label="Channel"><b>Total</b></td><td class="num" data-label="Spend"><b>₹1,20,000</b></td><td class="num" data-label="Enquiries"><b>186</b></td><td class="num" data-label="Cost / enquiry"><b>₹645</b></td></tr>
             </tbody>
           </table>
           <p class="note">Decision this table drives: move budget from YouTube to Meta, where an enquiry costs ~42% less.</p>
@@ -190,18 +231,18 @@
         <span class="tag">GTM-ready dataLayer</span>
       </div>
       <div class="card scroll-x">
-        <table>
+        <table class="stack stack--plan">
           <thead><tr><th>Event</th><th>Fires when</th><th>Why it matters</th></tr></thead>
           <tbody>
-            <tr><td><code>generate_lead</code></td><td>Enquiry form is sent</td><td>The main conversion: feeds Meta &amp; Google bidding so ads find more people who enquire</td></tr>
-            <tr><td><code>whatsapp_click</code></td><td>Any WhatsApp button</td><td>Most Kerala leads start on WhatsApp; without this they look like "no result"</td></tr>
-            <tr><td><code>call_click</code></td><td>Call / phone number tapped</td><td>Phone leads credited to the ad that brought them</td></tr>
-            <tr><td><code>case_study_open</code></td><td>A project is opened</td><td>Shows which work actually sells: lead with those in ads</td></tr>
-            <tr><td><code>service_interest</code></td><td>"Discuss …" on a service</td><td>Demand by service: where to focus offers and pricing</td></tr>
-            <tr><td><code>form_start</code></td><td>First tap into the form</td><td>Started vs sent = form drop-off to fix</td></tr>
-            <tr><td><code>work_reel_complete</code></td><td>Visitor reaches the last project</td><td>A strong engagement signal for retargeting audiences</td></tr>
-            <tr><td><code>scroll_depth</code></td><td>25 / 50 / 75 / 100% of the page</td><td>Whether people read past the first screen</td></tr>
-            <tr><td><code>work_filter</code>, <code>cta_click</code>, <code>social_click</code></td><td>Filters, buttons, social links</td><td>What visitors look for, and where they leave to</td></tr>
+            <tr><td data-label="Event"><code>generate_lead</code></td><td data-label="Fires when">Enquiry form is sent</td><td data-label="Why it matters">The main conversion: feeds Meta &amp; Google bidding so ads find more people who enquire</td></tr>
+            <tr><td data-label="Event"><code>whatsapp_click</code></td><td data-label="Fires when">Any WhatsApp button</td><td data-label="Why it matters">Most Kerala leads start on WhatsApp; without this they look like "no result"</td></tr>
+            <tr><td data-label="Event"><code>call_click</code></td><td data-label="Fires when">Call / phone number tapped</td><td data-label="Why it matters">Phone leads credited to the ad that brought them</td></tr>
+            <tr><td data-label="Event"><code>case_study_open</code></td><td data-label="Fires when">A project is opened</td><td data-label="Why it matters">Shows which work actually sells: lead with those in ads</td></tr>
+            <tr><td data-label="Event"><code>service_interest</code></td><td data-label="Fires when">"Discuss …" on a service</td><td data-label="Why it matters">Demand by service: where to focus offers and pricing</td></tr>
+            <tr><td data-label="Event"><code>form_start</code></td><td data-label="Fires when">First tap into the form</td><td data-label="Why it matters">Started vs sent = form drop-off to fix</td></tr>
+            <tr><td data-label="Event"><code>work_reel_complete</code></td><td data-label="Fires when">Visitor reaches the last project</td><td data-label="Why it matters">A strong engagement signal for retargeting audiences</td></tr>
+            <tr><td data-label="Event"><code>scroll_depth</code></td><td data-label="Fires when">25 / 50 / 75 / 100% of the page</td><td data-label="Why it matters">Whether people read past the first screen</td></tr>
+            <tr><td data-label="Event"><code>work_filter</code>, <code>cta_click</code>, <code>social_click</code></td><td data-label="Fires when">Filters, buttons, social links</td><td data-label="Why it matters">What visitors look for, and where they leave to</td></tr>
           </tbody>
         </table>
       </div>
