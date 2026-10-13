@@ -30,8 +30,7 @@
 
     .hero { padding: 40px 0 28px; display: grid; gap: 14px; }
     .eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 8px; }
-    .rec { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: rec 1.4s steps(1) infinite; }
-    @keyframes rec { 50% { opacity: .2; } }
+
     .hero h1 { font-size: clamp(34px, 6vw, 64px); font-weight: 700; }
     .hero h1 .dot { color: var(--accent); }
     .hero p { color: var(--soft); max-width: 62ch; margin: 0; font-size: 16px; }
@@ -53,9 +52,9 @@
     .btn--accent { background: var(--accent); border-color: var(--accent); }
     .btn:hover { border-color: var(--white); }
     .feed { list-style: none; margin: 0; padding: 0; max-height: 360px; overflow: auto; display: grid; gap: 8px; }
-    .feed li { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--ink-3); animation: in .4s ease; }
+    .feed li { display: grid; grid-template-columns: 10px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--ink-3); animation: in .4s ease; }
     @keyframes in { from { opacity: 0; transform: translateY(-6px); } }
-    .feed .ico { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: #262628; font-size: 16px; }
+    .feed .ico { width: 8px; height: 8px; border-radius: 50%; background: #5a5a5c; }
     .feed .ico.is-lead { background: var(--accent); }
     .feed b { font-weight: 600; display: block; font-size: 14px; }
     .feed span { color: var(--grey); font-size: 12px; }
@@ -121,7 +120,7 @@
       .live__actions { flex-direction: column; }
       .live__actions .btn { justify-content: center; width: 100%; min-height: 48px; }
       .feed { max-height: 300px; }
-      .feed li { grid-template-columns: 32px 1fr; padding: 10px; }
+      .feed li { grid-template-columns: 10px 1fr; padding: 10px 12px; }
       .feed time { grid-column: 2; font-size: 11px; margin-top: -4px; }
       .step { font-size: 14px; padding: 11px 12px; }
       .step small { display: none; }
@@ -157,50 +156,50 @@
   <div class="wrap">
     <header class="top">
       <a href="/" aria-label="Hytz home"><img src="https://framerusercontent.com/images/5ZWQ4p34dkx8G4dbK6lMGBMvXO4.png" alt="hytz." width="554" height="110"></a>
-      <a href="/" target="_blank" rel="noopener">Open the site ↗</a>
+      <a href="/" target="_blank" rel="noopener">View site</a>
     </header>
 
     <section class="hero">
-      <p class="eyebrow"><span class="rec" aria-hidden="true"></span> Growth dashboard · concept</p>
-      <h1>Every rupee of ad spend,<br class="br-wide"> accounted for<span class="dot">.</span></h1>
-      <p>The new hytz.co.in tracks every action that matters: WhatsApp taps, calls, case studies opened, enquiries sent. That data proves which ads bring clients, and it's the same setup Hytz can sell to every D2C and film client.</p>
-      <p class="byline">Concept by Aditya Manoj · built on the rebuilt Hytz site</p>
+      <p class="eyebrow">Growth dashboard (concept)</p>
+      <h1>Tracking and reporting<br class="br-wide"> for Hytz<span class="dot">.</span></h1>
+      <p>The rebuilt hytz.co.in records key visitor actions: enquiries, WhatsApp and call taps, and case studies viewed. The same setup can be offered to Hytz clients as a service.</p>
+      <p class="byline">Prepared by Aditya Manoj</p>
     </section>
 
     <!-- 1. LIVE -->
     <section class="section">
       <div class="section-head">
-        <h2>Live: this browser's session</h2>
-        <span class="tag tag--live">● Real data, updates live</span>
+        <h2>Live session</h2>
+        <span class="tag tag--live">Live data</span>
       </div>
       <div class="live">
         <div class="card">
           <ul class="feed" data-feed></ul>
           <div class="live__actions">
-            <a class="btn btn--accent" href="/" target="_blank" rel="noopener">Open the site and click around ↗</a>
-            <button class="btn" type="button" data-clear>Clear demo data</button>
+            <a class="btn btn--accent" href="/" target="_blank" rel="noopener">Open site in new tab</a>
+            <button class="btn" type="button" data-clear>Clear data</button>
           </div>
-          <p class="note">Tap WhatsApp, open a case study, scroll, start the form — each action appears here within a second. Stored only in this browser; nothing is sent anywhere.</p>
+          <p class="note">Use the site in another tab. Actions appear here within a second. Data stays in this browser and is not sent anywhere.</p>
         </div>
         <div class="card">
-          <h3 style="font-size:18px;margin-bottom:12px">Your visit as a funnel</h3>
+          <h3 style="font-size:18px;margin-bottom:12px">Session progress</h3>
           <div class="steps" data-steps></div>
           <div class="counts" data-counts></div>
         </div>
       </div>
     </section>
 
-    <!-- 2. ILLUSTRATIVE MONTH -->
+    <!-- 2. SAMPLE MONTH -->
     <section class="section">
       <div class="section-head">
-        <h2>What a monthly client report looks like</h2>
-        <span class="tag tag--demo">Illustrative numbers</span>
+        <h2>Sample monthly report</h2>
+        <span class="tag tag--demo">Illustrative figures</span>
       </div>
       <div class="kpis">
-        <div class="card kpi"><p>Ad spend</p><strong>₹1,20,000</strong><em>Meta · Google · YouTube</em></div>
-        <div class="card kpi"><p>Enquiries</p><strong>186</strong><em>form + WhatsApp + calls</em></div>
-        <div class="card kpi"><p>Cost per enquiry</p><strong>₹645</strong><em>▼ 18% vs last month</em></div>
-        <div class="card kpi kpi--hero"><p>Return on ad spend</p><strong>1.7×</strong><em>= the "70%+ ROI" Hytz promises</em></div>
+        <div class="card kpi"><p>Ad spend</p><strong>₹1,20,000</strong><em>Meta, Google, YouTube</em></div>
+        <div class="card kpi"><p>Enquiries</p><strong>186</strong><em>Forms, WhatsApp, calls</em></div>
+        <div class="card kpi"><p>Cost per enquiry</p><strong>₹645</strong><em>18% lower than last month</em></div>
+        <div class="card kpi kpi--hero"><p>Return on ad spend</p><strong>1.7×</strong><em>A 70% return on spend</em></div>
       </div>
 
       <div class="grid2" style="margin-top:16px">
@@ -213,13 +212,13 @@
           <table class="stack">
             <thead><tr><th>Channel</th><th class="num">Spend</th><th class="num">Enquiries</th><th class="num">Cost / enquiry</th></tr></thead>
             <tbody>
-              <tr><td data-label="Channel">Meta (Instagram + Facebook)</td><td class="num" data-label="Spend">₹74,400</td><td class="num" data-label="Enquiries">128</td><td class="num" data-label="Cost / enquiry">₹581</td></tr>
+              <tr><td data-label="Channel">Meta (Instagram, Facebook)</td><td class="num" data-label="Spend">₹74,400</td><td class="num" data-label="Enquiries">128</td><td class="num" data-label="Cost / enquiry">₹581</td></tr>
               <tr><td data-label="Channel">Google Search</td><td class="num" data-label="Spend">₹33,600</td><td class="num" data-label="Enquiries">46</td><td class="num" data-label="Cost / enquiry">₹730</td></tr>
               <tr><td data-label="Channel">YouTube</td><td class="num" data-label="Spend">₹12,000</td><td class="num" data-label="Enquiries">12</td><td class="num" data-label="Cost / enquiry">₹1,000</td></tr>
               <tr class="total"><td data-label="Channel"><b>Total</b></td><td class="num" data-label="Spend"><b>₹1,20,000</b></td><td class="num" data-label="Enquiries"><b>186</b></td><td class="num" data-label="Cost / enquiry"><b>₹645</b></td></tr>
             </tbody>
           </table>
-          <p class="note">Decision this table drives: move budget from YouTube to Meta, where an enquiry costs ~42% less.</p>
+          <p class="note">Meta delivers enquiries at about 42% lower cost than YouTube, so budget can shift towards Meta.</p>
         </div>
       </div>
     </section>
@@ -227,22 +226,22 @@
     <!-- 3. TRACKING PLAN -->
     <section class="section">
       <div class="section-head">
-        <h2>The tracking plan (already live on the site)</h2>
-        <span class="tag">GTM-ready dataLayer</span>
+        <h2>Tracking plan</h2>
+        <span class="tag">Implemented on the site</span>
       </div>
       <div class="card scroll-x">
         <table class="stack stack--plan">
-          <thead><tr><th>Event</th><th>Fires when</th><th>Why it matters</th></tr></thead>
+          <thead><tr><th>Event</th><th>Trigger</th><th>Purpose</th></tr></thead>
           <tbody>
-            <tr><td data-label="Event"><code>generate_lead</code></td><td data-label="Fires when">Enquiry form is sent</td><td data-label="Why it matters">The main conversion: feeds Meta &amp; Google bidding so ads find more people who enquire</td></tr>
-            <tr><td data-label="Event"><code>whatsapp_click</code></td><td data-label="Fires when">Any WhatsApp button</td><td data-label="Why it matters">Most Kerala leads start on WhatsApp; without this they look like "no result"</td></tr>
-            <tr><td data-label="Event"><code>call_click</code></td><td data-label="Fires when">Call / phone number tapped</td><td data-label="Why it matters">Phone leads credited to the ad that brought them</td></tr>
-            <tr><td data-label="Event"><code>case_study_open</code></td><td data-label="Fires when">A project is opened</td><td data-label="Why it matters">Shows which work actually sells: lead with those in ads</td></tr>
-            <tr><td data-label="Event"><code>service_interest</code></td><td data-label="Fires when">"Discuss …" on a service</td><td data-label="Why it matters">Demand by service: where to focus offers and pricing</td></tr>
-            <tr><td data-label="Event"><code>form_start</code></td><td data-label="Fires when">First tap into the form</td><td data-label="Why it matters">Started vs sent = form drop-off to fix</td></tr>
-            <tr><td data-label="Event"><code>work_reel_complete</code></td><td data-label="Fires when">Visitor reaches the last project</td><td data-label="Why it matters">A strong engagement signal for retargeting audiences</td></tr>
-            <tr><td data-label="Event"><code>scroll_depth</code></td><td data-label="Fires when">25 / 50 / 75 / 100% of the page</td><td data-label="Why it matters">Whether people read past the first screen</td></tr>
-            <tr><td data-label="Event"><code>work_filter</code>, <code>cta_click</code>, <code>social_click</code></td><td data-label="Fires when">Filters, buttons, social links</td><td data-label="Why it matters">What visitors look for, and where they leave to</td></tr>
+            <tr><td data-label="Event"><code>generate_lead</code></td><td data-label="Trigger">Enquiry form submitted</td><td data-label="Purpose">Primary conversion. Used by Meta and Google to optimise bidding.</td></tr>
+            <tr><td data-label="Event"><code>whatsapp_click</code></td><td data-label="Trigger">WhatsApp button tapped</td><td data-label="Purpose">Records WhatsApp enquiries, which would otherwise go unattributed.</td></tr>
+            <tr><td data-label="Event"><code>call_click</code></td><td data-label="Trigger">Phone number tapped</td><td data-label="Purpose">Attributes phone enquiries to the source campaign.</td></tr>
+            <tr><td data-label="Event"><code>case_study_open</code></td><td data-label="Trigger">Project opened</td><td data-label="Purpose">Shows which projects attract interest.</td></tr>
+            <tr><td data-label="Event"><code>service_interest</code></td><td data-label="Trigger">Service enquiry button tapped</td><td data-label="Purpose">Measures demand by service.</td></tr>
+            <tr><td data-label="Event"><code>form_start</code></td><td data-label="Trigger">First input in the form</td><td data-label="Purpose">Compared with submissions, shows form drop-off.</td></tr>
+            <tr><td data-label="Event"><code>work_reel_complete</code></td><td data-label="Trigger">Last project in the work section reached</td><td data-label="Purpose">Builds an engaged-visitor audience for retargeting.</td></tr>
+            <tr><td data-label="Event"><code>scroll_depth</code></td><td data-label="Trigger">25, 50, 75 and 100% of the page scrolled</td><td data-label="Purpose">Measures how far visitors read.</td></tr>
+            <tr><td data-label="Event"><code>work_filter</code>, <code>cta_click</code>, <code>social_click</code></td><td data-label="Trigger">Filter, button or social link used</td><td data-label="Purpose">Shows navigation patterns and exit points.</td></tr>
           </tbody>
         </table>
       </div>
@@ -251,64 +250,65 @@
     <!-- 4. NEXT -->
     <section class="section grid2">
       <div class="card">
-        <h3 style="font-size:20px;margin-bottom:12px">To switch it on for real</h3>
+        <h3 style="font-size:20px;margin-bottom:12px">Steps to go live</h3>
         <ul class="points">
-          <li>Create a Google Tag Manager container and add it to the site (one snippet).</li>
-          <li>Connect GA4 and the Meta Pixel + Conversions API to these events.</li>
-          <li>Mark <code>generate_lead</code>, <code>whatsapp_click</code> and <code>call_click</code> as conversions in Meta and Google Ads.</li>
-          <li>Add a cookie-consent banner first (India's DPDP Act).</li>
-          <li>Build this report in Looker Studio: free, auto-updating, shareable with clients.</li>
+          <li>Install a Google Tag Manager container on the site.</li>
+          <li>Connect GA4, the Meta Pixel and the Meta Conversions API to the events above.</li>
+          <li>Set <code>generate_lead</code>, <code>whatsapp_click</code> and <code>call_click</code> as conversions in Meta and Google Ads.</li>
+          <li>Add a cookie consent banner, as required under India's DPDP Act.</li>
+          <li>Build the monthly report in Looker Studio for sharing with clients.</li>
         </ul>
       </div>
       <div class="card">
-        <h3 style="font-size:20px;margin-bottom:12px">What it gives Hytz</h3>
+        <h3 style="font-size:20px;margin-bottom:12px">Benefits for Hytz</h3>
         <ul class="points">
-          <li>Proof for the "70%+ ROI" claim, in client-ready reports.</li>
-          <li>Cheaper leads: ad platforms optimise for real enquiries, not clicks.</li>
-          <li>A repeatable service to sell: tracking + landing page + reporting for every D2C and film client.</li>
-          <li>Film launches measured end to end: trailer views → ticket-booking clicks.</li>
+          <li>Measured evidence for the 70% ROI claim.</li>
+          <li>Lower cost per lead, as ad platforms optimise for enquiries rather than clicks.</li>
+          <li>A packaged client service: tracking, landing pages and reporting.</li>
+          <li>Full measurement of film campaigns, from trailer views to ticket bookings.</li>
         </ul>
       </div>
     </section>
 
     <footer>
-      <span>Concept by Aditya Manoj for Hytz Marketing Pvt Ltd</span>
-      <span>Live section: real events from this browser. Report section: illustrative numbers.</span>
+      <span>Prepared by Aditya Manoj for Hytz Marketing Pvt Ltd</span>
+      <span>Live session uses data from this browser only. Report figures are illustrative.</span>
     </footer>
   </div>
 
   <script>
     // ---- illustrative funnel (consistent with the KPI tiles: 186 enquiries)
     const FUNNEL = [
-      ["Ad clicks", 9400], ["Site visits", 8200], ["Engaged visitors", 3050], ["Lead actions", 412], ["Enquiries", 186],
+      ["Ad clicks", 9400], ["Site visits", 8200], ["Engaged visitors", 3050], ["Contact actions", 412], ["Enquiries", 186],
     ];
     const fEl = document.querySelector("[data-funnel]");
-    fEl.innerHTML = FUNNEL.map(([name, n], i) => {
+    fEl.innerHTML = FUNNEL.map(([name, n]) => {
       const pct = (n / FUNNEL[0][1]) * 100;
-      const step = i ? ` · ${((n / FUNNEL[i - 1][1]) * 100).toFixed(0)}% of previous` : "";
-      return `<div class="frow"><label>${name}</label><div class="bar"><i style="--w:${Math.max(pct, 2).toFixed(1)}%"></i></div><b>${n.toLocaleString("en-IN")}<small>${pct.toFixed(1)}%${step ? "" : ""}</small></b></div>`;
+      return `<div class="frow"><label>${name}</label><div class="bar"><i style="--w:${Math.max(pct, 2).toFixed(1)}%"></i></div><b>${n.toLocaleString("en-IN")}<small>${pct.toFixed(1)}%</small></b></div>`;
     }).join("");
-    requestAnimationFrame(() => fEl.querySelectorAll(".bar i").forEach(i => { i.style.width = i.style.getPropertyValue("--w"); }));
-    setTimeout(() => fEl.querySelectorAll(".bar i").forEach(i => { i.style.width = i.style.getPropertyValue("--w"); }), 50);
+    const grow = () => fEl.querySelectorAll(".bar i").forEach(i => { i.style.width = i.style.getPropertyValue("--w"); });
+    requestAnimationFrame(grow);
+    setTimeout(grow, 50);
 
     // ---- live session (reads the events the site writes to this browser's localStorage)
+    // [label, detail, is a contact action]
     const LABEL = {
-      page_view: ["👁", "Page viewed", e => e.page === "/" ? "Homepage" : e.page],
-      scroll_depth: ["↓", "Scrolled", e => `${e.percent}% of the page`],
-      case_study_open: ["🎬", "Case study opened", e => e.project],
-      work_filter: ["⧉", "Work filtered", e => e.filter],
-      work_reel_complete: ["★", "Watched the whole work reel", e => `${e.projects} projects`],
-      service_interest: ["◎", "Interested in a service", e => e.service],
-      form_start: ["✎", "Started the enquiry form", () => "Contact section"],
-      generate_lead: ["✓", "Enquiry sent", e => e.services, true],
-      whatsapp_click: ["💬", "WhatsApp tapped", e => e.label, true],
-      call_click: ["📞", "Call tapped", e => e.label, true],
-      email_click: ["✉", "Email tapped", e => e.label, true],
-      social_click: ["↗", "Social link", e => e.network],
-      cta_click: ["→", "Button", e => e.label],
+      page_view: ["Page view", e => e.page === "/" ? "Homepage" : e.page],
+      scroll_depth: ["Scroll depth", e => `${e.percent}% of page`],
+      case_study_open: ["Case study opened", e => e.project],
+      work_filter: ["Work filter", e => e.filter],
+      work_reel_complete: ["Work section completed", e => `${e.projects} projects viewed`],
+      service_interest: ["Service enquiry", e => e.service],
+      form_start: ["Form started", () => "Contact form"],
+      generate_lead: ["Enquiry submitted", e => e.services, true],
+      whatsapp_click: ["WhatsApp tap", e => e.label, true],
+      call_click: ["Call tap", e => e.label, true],
+      email_click: ["Email tap", e => e.label, true],
+      social_click: ["Social link", e => e.network],
+      cta_click: ["Button", e => e.label],
     };
     const read = () => { try { return JSON.parse(localStorage.getItem("hytz_events") || "[]"); } catch { return []; } };
-    const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const esc = s => String(s ?? "").replace(/[←-⇿]/g, "").trim().replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
     const time = t => new Date(t).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
     let lastLen = -1;
     function render() {
@@ -317,21 +317,21 @@
       lastLen = ev.length;
       const feed = document.querySelector("[data-feed]");
       feed.innerHTML = ev.length ? ev.slice(-40).reverse().map(e => {
-        const [ico, title, detail, lead] = LABEL[e.event] || ["•", e.event, () => ""];
-        return `<li><span class="ico${lead ? " is-lead" : ""}" aria-hidden="true">${ico}</span><div><b>${esc(title)}</b><span>${esc(detail(e))}</span></div><time>${time(e.t)}</time></li>`;
-      }).join("") : `<li class="empty" style="display:block">No activity yet. Open the site in another tab and tap around; it'll show up here.</li>`;
+        const [title, detail, lead] = LABEL[e.event] || [e.event, () => ""];
+        return `<li><span class="ico${lead ? " is-lead" : ""}" aria-hidden="true"></span><div><b>${esc(title)}</b><span>${esc(detail(e))}</span></div><time>${time(e.t)}</time></li>`;
+      }).join("") : `<li class="empty" style="display:block">No activity recorded. Open the site in a new tab to begin.</li>`;
       const has = n => ev.some(e => n.includes(e.event));
       const steps = [
-        ["Visited", has(["page_view"])],
-        ["Engaged (opened work or read half the page)", has(["case_study_open", "work_reel_complete"]) || ev.some(e => e.event === "scroll_depth" && e.percent >= 50)],
-        ["Lead action (WhatsApp, call, email or form)", has(["whatsapp_click", "call_click", "email_click", "form_start"])],
-        ["Enquiry sent", has(["generate_lead"])],
+        ["Visit", has(["page_view"])],
+        ["Engagement (case study or 50% scroll)", has(["case_study_open", "work_reel_complete"]) || ev.some(e => e.event === "scroll_depth" && e.percent >= 50)],
+        ["Contact intent (WhatsApp, call, email or form)", has(["whatsapp_click", "call_click", "email_click", "form_start"])],
+        ["Enquiry submitted", has(["generate_lead"])],
       ];
       document.querySelector("[data-steps]").innerHTML = steps.map(([t, done], i) =>
-        `<div class="step${done ? " is-done" : ""}"><i>${done ? "✓" : i + 1}</i>${t}<small>${done ? "done" : "not yet"}</small></div>`).join("");
+        `<div class="step${done ? " is-done" : ""}"><i>${i + 1}</i>${t}<small>${done ? "Complete" : "Pending"}</small></div>`).join("");
       const counts = {};
       ev.forEach(e => { counts[e.event] = (counts[e.event] || 0) + 1; });
-      document.querySelector("[data-counts]").innerHTML = Object.entries(counts).map(([k, v]) => `<span>${esc(k)} × ${v}</span>`).join("");
+      document.querySelector("[data-counts]").innerHTML = Object.entries(counts).map(([k, v]) => `<span>${esc(k)}: ${v}</span>`).join("");
     }
     render();
     addEventListener("storage", e => { if (e.key === "hytz_events") render(); });
