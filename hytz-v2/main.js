@@ -17,6 +17,54 @@ const CONFIG = {
   facebook: "https://www.facebook.com/hytz.co.in",
 };
 
+/* ---------------- Tracking ----------------
+   Every key action is pushed to window.dataLayer — the standard hand-off point for Google Tag Manager,
+   so GA4 / Meta Pixel / Google Ads conversions can be attached later without touching this code.
+   For the /growth/ demo, events are also kept in this browser's localStorage (last 200). Nothing is
+   sent to any third party. */
+window.dataLayer = window.dataLayer || [];
+function track(event, params = {}) {
+  const e = { event, ...params, page: location.pathname, t: Date.now() };
+  window.dataLayer.push(e);
+  try {
+    const log = JSON.parse(localStorage.getItem("hytz_events") || "[]");
+    log.push(e);
+    localStorage.setItem("hytz_events", JSON.stringify(log.slice(-200)));
+  } catch {}
+}
+track("page_view", { title: document.title });
+
+// clicks: captured before any navigation/animation runs
+document.addEventListener("click", e => {
+  const el = e.target.closest("a, button");
+  if (!el) return;
+  const href = el.getAttribute("href") || "";
+  const label = (el.textContent || el.getAttribute("aria-label") || "").trim().replace(/\s+/g, " ").slice(0, 40);
+  if (href.includes("wa.me")) track("whatsapp_click", { label });
+  else if (href.startsWith("tel:")) track("call_click", { label });
+  else if (href.startsWith("mailto:")) track("email_click", { label });
+  else if (/instagram|linkedin|facebook/.test(href)) track("social_click", { network: href.match(/instagram|linkedin|facebook/)[0] });
+  else if (el.matches("[data-filter]")) track("work_filter", { filter: el.dataset.filter });
+  else if (el.matches("[data-service]")) track("service_interest", { service: el.dataset.service });
+  else if (el.matches(".btn")) track("cta_click", { label, to: href });
+}, true);
+
+// scroll depth: 25 / 50 / 75 / 100 %, once each per page
+(() => {
+  const hit = new Set();
+  addEventListener("scroll", () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    if (max <= 0) return;
+    const pct = (scrollY / max) * 100;
+    for (const m of [25, 50, 75, 100]) if (pct >= m - 1 && !hit.has(m)) { hit.add(m); track("scroll_depth", { percent: m }); }
+  }, { passive: true });
+})();
+
+// form: first interaction
+document.addEventListener("focusin", e => {
+  if (e.target.closest("[data-form]") && !track.formStarted) { track.formStarted = true; track("form_start"); }
+});
+
 const IMG = (id, w = 800) => `https://framerusercontent.com/images/${id}?scale-down-to=${w}`;
 
 // NOTE: summaries are written from what's visible on the posters; results marked [add] need real numbers.
@@ -515,6 +563,7 @@ let openCase = () => {};               // assigned by the modal below
       $(".poster", li).setAttribute("aria-current", i === k ? "true" : "false");
     });
     count.textContent = `${pad(k + 1)} / ${pad(items.length)}`;
+    if (k === items.length - 1 && items.length > 1 && !setActive.done) { setActive.done = true; track("work_reel_complete", { projects: items.length }); }
     prev.disabled = k === 0;
     next.disabled = k === items.length - 1;
     clearTimeout(swapT);
@@ -613,6 +662,7 @@ let openCase = () => {};               // assigned by the modal below
     modal.scrollTop = 0;
   }
   openCase = (i, from) => {
+    track("case_study_open", { project: WORK[i].title, category: WORK[i].cat });
     opener = from;
     render(i);
     modal.showModal();
@@ -830,6 +880,7 @@ document.addEventListener("click", async e => {
       const json = await res.json().catch(() => ({}));
       if (!res.ok || String(json.success) === "false") throw new Error(json.message || res.status);
       form.classList.add("is-sent");
+      track("generate_lead", { services: d.services, budget: d.budget || "-" });
       form.innerHTML = `<h3 class="display" style="font-size:40px">Thank you<span class="dot">.</span></h3>
         <p class="muted">Your enquiry is in our inbox at ${CONFIG.email}. We'll reply within one working day.</p>`;
     } catch {
