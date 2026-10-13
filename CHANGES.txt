@@ -15,34 +15,13 @@ BUGS ON THE OLD SITE
 
 
 CHANGES
-- Every button and link now works, including "Back to top".
+- Every button and link now works.
 - Contact form emails info@hytz.co.in.
 - WhatsApp, Call, Instagram, LinkedIn, Facebook and founder contact added.
 - Same colors, logo and fonts; Malayalam greeting (നമസ്കാരം!).
-- Empty orange box is now a call-to-action.
-- Orange square browser-tab icon.
 
 
 IMPROVEMENTS
-- "Now Showing" film-reel showcase of the work, with case studies.
-- Staircase scroll effect, orange mouse circle, fill-on-click buttons.
-- Client logos much bigger in an endless strip; hold the mouse on one
-  for a second and it pops out larger, in full color, with the name.
-- Built for phones: the work reel plays as you scroll (or swipe), swipe
-  through case studies and down to close, drag the logo strip,
-  press-and-hold a logo to zoom, and a floating WhatsApp /
-  "Start a project" bar while browsing.
-- Also works with a keyboard.
-
-
-THE JOB KURIAN PAGE (NEW)
-- Antony's LinkedIn post about launching jobkurian.com is now a full
-  article on the site: hytz-co.web.app/insights/job-kurian-website/
-- It shows the real website, what Hytz built, and credits the team.
-- It proves Hytz also designs and builds websites, not just campaigns.
-- It is the first post in a new "Insights" section; more stories can be
-  added the same way.
-
 
 SEO: WHY IT MATTERS FOR SALES
 What was added:
@@ -69,6 +48,25 @@ How it brings in business:
   real enquiries instead of being lost.
 - It keeps building: each new case study or article adds more ways to
   be found, at no extra advertising cost.
+
+- "Now Showing" film-reel showcase of the work, with case studies.
+- Staircase scroll effect, orange mouse circle, fill-on-click buttons.
+- Client logos much bigger in an endless strip; hold the mouse on one
+  for a second and it pops out larger, in full color, with the name.
+- Built for phones: the work reel plays as you scroll (or swipe), swipe
+  through case studies and down to close, drag the logo strip,
+  press-and-hold a logo to zoom, and a floating WhatsApp /
+  "Start a project" bar while browsing.
+- Also works with a keyboard.
+
+
+THE JOB KURIAN PAGE (NEW)
+- Antony's LinkedIn post about launching jobkurian.com is now a full
+  article on the site: hytz-co.web.app/insights/job-kurian-website/
+- It shows the real website, what Hytz built, and credits the team.
+- It proves Hytz also designs and builds websites, not just campaigns.
+- It is the first post in a new "Insights" section; more stories can be
+  added the same way.
 
 
 TO DO BEFORE GOING LIVE

@@ -68,6 +68,22 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 document.documentElement.classList.add("js");
 
+/* ---------------- Stable viewport height ----------------
+   Phone browsers (Safari, and especially Brave/Chrome on iOS) change the viewport height while you
+   scroll, as their toolbars collapse and reappear. Anything sized from it (hero, reel length, pinned
+   frame) then changes height mid-scroll and the page visibly jumps — iOS doesn't compensate.
+   So: measure once, expose it as --app-h, and only re-measure when the width changes (rotation),
+   or on any resize for mouse/desktop users, where a height change is a deliberate window resize. */
+const finePointer = matchMedia("(pointer: fine)").matches;
+let appH = innerHeight, appW = innerWidth;
+const setAppH = () => document.documentElement.style.setProperty("--app-h", `${appH}px`);
+setAppH();
+addEventListener("resize", () => {
+  if (innerWidth === appW && !finePointer) return;   // toolbar show/hide on a phone: ignore
+  appW = innerWidth; appH = innerHeight; setAppH();
+  dispatchEvent(new Event("app:resize"));
+});
+
 /* ---------------- Swipe helper (touch) ----------------
    Calls handlers.left/right/up/down for a quick, mostly-straight one-finger swipe.
    canStart(e) can veto a gesture at touchstart (e.g. only when a sheet is scrolled to the top). */
@@ -255,7 +271,7 @@ document.addEventListener("click", e => {
   let ticking = false;
   const render = () => {
     ticking = false;
-    const vh = innerHeight;
+    const vh = appH;
     const p = Math.min(1, Math.max(0, scrollY / hero.offsetHeight));
     cols.forEach((c, i) => c.style.setProperty("--h", (AMP[i] * vh * p).toFixed(1)));
     // hero content drifts up and fades as it's covered
@@ -264,7 +280,7 @@ document.addEventListener("click", e => {
     heroScroll.style.opacity = (1 - p * 3).toFixed(3);
   };
   addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(render); } }, { passive: true });
-  addEventListener("resize", render);
+  addEventListener("app:resize", render);
   render();
 })();
 
@@ -307,7 +323,7 @@ document.addEventListener("click", e => {
   };
   build();
   let rt;
-  addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(build, 150); });
+  addEventListener("app:resize", () => { clearTimeout(rt); rt = setTimeout(build, 150); });
   if (reduceMotion) return;
 
   // ---- pop-out card
@@ -440,14 +456,14 @@ let openCase = () => {};               // assigned by the modal below
 
   // desktop: give the reel enough height to scroll through every poster while pinned
   function layout() {
-    reel.style.height = pinned.matches ? `calc(100svh + ${maxF() * STEP_VH}vh)` : "";
+    reel.style.height = pinned.matches ? `${Math.round(appH + maxF() * appH * STEP_VH / 100)}px` : "";
     track.style.transform = "";
     render();
   }
 
   function readF() {
     if (pinned.matches) {
-      const span = reel.offsetHeight - innerHeight;
+      const span = reel.offsetHeight - appH;
       const p = span > 0 ? Math.min(1, Math.max(0, (scrollY - reelTop()) / span)) : 0;
       return p * maxF();
     }
@@ -511,7 +527,7 @@ let openCase = () => {};               // assigned by the modal below
     k = Math.max(0, Math.min(maxF(), k));
     const behavior = reduceMotion ? "auto" : "smooth";
     if (pinned.matches) {
-      const span = reel.offsetHeight - innerHeight;
+      const span = reel.offsetHeight - appH;
       scrollTo({ top: reelTop() + (maxF() ? (k / maxF()) * span : 0) + 1, behavior });
     } else {
       viewport.scrollTo({ left: k * stepPx(), behavior });
@@ -522,7 +538,7 @@ let openCase = () => {};               // assigned by the modal below
   addEventListener("scroll", () => pinned.matches && schedule(), { passive: true });
   viewport.addEventListener("scroll", () => !pinned.matches && schedule(), { passive: true });
   viewport.addEventListener("scroll", () => reel.classList.add("is-swiped"), { passive: true, once: true });
-  addEventListener("resize", layout);
+  addEventListener("app:resize", layout);
   pinned.addEventListener("change", layout);
 
   // click: off-centre poster → bring it to centre; centred poster → open the case study

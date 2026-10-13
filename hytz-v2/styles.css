@@ -179,7 +179,7 @@ body.menu-open { overflow: hidden; }
 
 /* ---------------- Hero ---------------- */
 .hero {
-  position: relative; min-height: 100svh; background: var(--ink); color: var(--white);
+  position: relative; min-height: var(--app-h, 100svh); background: var(--ink); color: var(--white);
   display: flex; align-items: flex-end; padding: 0 var(--pad) clamp(28px, 5vw, 56px);
 }
 .hero__inner {
@@ -302,9 +302,9 @@ main > section:not(.hero), .footer { position: relative; z-index: 1; }
 .work { background: var(--ink); color: var(--white); }
 .reel { position: relative; }
 /* poster width: as big as fits under the header on short screens */
-.reel { --pw: min(clamp(220px, 21vw, 340px), calc((100svh - 380px) * .8)); --gap: clamp(20px, 3vw, 44px); }
+.reel { --pw: min(clamp(220px, 21vw, 340px), calc((var(--app-h, 100svh) - 380px) * .8)); --gap: clamp(20px, 3vw, 44px); }
 .reel__pin {
-  position: sticky; top: 0; height: 100svh; overflow: hidden;
+  position: sticky; top: 0; height: var(--app-h, 100svh); overflow: hidden;   /* stable height: see --app-h in main.js */
   display: flex; flex-direction: column; justify-content: space-between;
 }
 
@@ -401,7 +401,7 @@ main > section:not(.hero), .footer { position: relative; z-index: 1; }
    The poster is sized from the screen height so heading + poster + credits fit one screen.
    Summary and tags are left to "View case" to save room. */
 @media (max-width: 860px) {
-  .reel { --pw: min(64vw, calc((100svh - 440px) * .8), 300px); }
+  .reel { --pw: min(64vw, calc((var(--app-h, 100svh) - 440px) * .8), 300px); }
   .reel__head { padding-top: 14px; gap: 10px 16px; }
   .reel__eyebrow { margin-bottom: 6px; }
   .reel__title { font-size: clamp(26px, 7.4vw, 36px); }
